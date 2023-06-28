@@ -1,8 +1,8 @@
-let registros = []; // array para almacenar los registros
+let registros = [];
 
 let Continuar = true;
 while (Continuar === true) {
-    let datos = {}; // objeto para almacenar los datos de cada registro
+    let datos = {};
 
     let CantidadPesos = parseInt(prompt("Ingrese la cantidad de pesos"));
     let Opcion = parseInt(
@@ -12,21 +12,21 @@ while (Continuar === true) {
     if (!isNaN(CantidadPesos) && !isNaN(Opcion)) {
         if (Opcion === 1) {
             let TotalDolar = (CantidadPesos / 239.5).toFixed(2);
-            datos.tipoDolar = "Oficial"; // esto se guarda en el Objeto "datos"
-            datos.totalDolar = TotalDolar; // esto se guarda en el Objeto "datos"
-            registros.push(datos); // agregar el objeto al array de registros
+            datos.tipoDolar = "Oficial";
+            datos.totalDolar = TotalDolar;
+            registros.push(datos);
             alert("El total de Pesos a Dolar Oficial sería de " + TotalDolar);
         } else if (Opcion === 2) {
             let TotalDolar = (CantidadPesos / 482).toFixed(2);
-            datos.tipoDolar = "Blue"; // esto se guarda en el Objeto "datos"
-            datos.totalDolar = TotalDolar; // esto se guarda en el Objeto "datos"
-            registros.push(datos); // agregar el objeto al array de registros
+            datos.tipoDolar = "Blue";
+            datos.totalDolar = TotalDolar;
+            registros.push(datos);
             alert("El total de Pesos a Dolar Blue es de " + TotalDolar);
         } else if (Opcion === 3) {
             let TotalDolar = (CantidadPesos / 503).toFixed(2);
-            datos.tipoDolar = "Turista"; // esto se guarda en el Objeto "datos"
-            datos.totalDolar = TotalDolar; // esto se guarda en el Objeto "datos"
-            registros.push(datos); // agregar el objeto al array de registros
+            datos.tipoDolar = "Turista";
+            datos.totalDolar = TotalDolar;
+            registros.push(datos);
             alert("El total de Pesos a Dolar Turista es de " + TotalDolar);
         }
     } else {
@@ -35,14 +35,14 @@ while (Continuar === true) {
     Continuar = confirm("¿Desea realizar otro cálculo?");
 }
 
-// Método de búsqueda
+
 let buscarRegistro = function (tipo) {
     return registros.filter(function (registro) {
         return registro.tipoDolar.toLowerCase() === tipo.toLowerCase();
     });
 };
 
-// Filtrar registros por tipo de Dólar
+
 let tipoBusqueda = prompt("Ingrese el tipo de Dólar a buscar (Oficial, Blue, Turista):")
 let resultadosFiltrados = buscarRegistro(tipoBusqueda)
 
