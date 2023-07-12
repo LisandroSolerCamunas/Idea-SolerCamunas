@@ -1,59 +1,54 @@
-let registros = [];
+let CantidadPesos = document.getElementById("cantidad");
+let Opciones = document.getElementsByClassName("btn btn-primary");
+let resultadoElement = document.getElementById("resultado");
+let borrarhistorial = document.getElementById("borrarhistorial")
+let historial = [];
 
-let Continuar = true;
-while (Continuar === true) {
-    let datos = {};
-
-    let CantidadPesos = parseInt(prompt("Ingrese la cantidad de pesos"));
-    let Opcion = parseInt(
-        prompt("Ingrese según el número el dolar a calcular: 1-Dolar oficial 2-Dolar Blue 3-Dolar turista")
-    );
-
-    if (!isNaN(CantidadPesos) && !isNaN(Opcion)) {
-        if (Opcion === 1) {
-            let TotalDolar = (CantidadPesos / 239.5).toFixed(2);
-            datos.tipoDolar = "Oficial";
-            datos.totalDolar = TotalDolar;
-            registros.push(datos);
-            alert("El total de Pesos a Dolar Oficial sería de " + TotalDolar);
-        } else if (Opcion === 2) {
-            let TotalDolar = (CantidadPesos / 482).toFixed(2);
-            datos.tipoDolar = "Blue";
-            datos.totalDolar = TotalDolar;
-            registros.push(datos);
-            alert("El total de Pesos a Dolar Blue es de " + TotalDolar);
-        } else if (Opcion === 3) {
-            let TotalDolar = (CantidadPesos / 503).toFixed(2);
-            datos.tipoDolar = "Turista";
-            datos.totalDolar = TotalDolar;
-            registros.push(datos);
-            alert("El total de Pesos a Dolar Turista es de " + TotalDolar);
+for (let i = 0; i < Opciones.length; i++) {
+    Opciones[i].addEventListener("click", function () {
+        let opcionSeleccionada = Opciones[i].id;
+        let TotalDolar, tipoDolar;
+        if (opcionSeleccionada === "Dolar oficial") {
+            TotalDolar = (parseInt(CantidadPesos.value) / 239.5).toFixed(2);
+            tipoDolar = "Oficial";
+            localStorage.setItem("resultado", TotalDolar);
+            localStorage.setItem("tipoDolar", tipoDolar);
+            historial.push({ resultado: TotalDolar, tipoDolar });
+            resultadoElement.innerHTML = "El total de Pesos a Dolar " + tipoDolar + " sería de " + TotalDolar;
+        } else if (opcionSeleccionada === "Dolar Blue") {
+            TotalDolar = (parseInt(CantidadPesos.value) / 482).toFixed(2);
+            tipoDolar = "Blue";
+            localStorage.setItem("resultado", TotalDolar);
+            localStorage.setItem("tipoDolar", tipoDolar);
+            historial.push({ resultado: TotalDolar, tipoDolar });
+            resultadoElement.innerHTML = "El total de Pesos a Dolar " + tipoDolar + " sería de " + TotalDolar;
+        } else if (opcionSeleccionada === "Dolar turista") {
+            TotalDolar = (parseInt(CantidadPesos.value) / 503).toFixed(2);
+            tipoDolar = "Turista";
+            localStorage.setItem("resultado", TotalDolar);
+            localStorage.setItem("tipoDolar", tipoDolar);
+            historial.push({ resultado: TotalDolar, tipoDolar });
+            resultadoElement.innerHTML = "El total de Pesos a Dolar " + tipoDolar + " sería de " + TotalDolar;
         }
-    } else {
-        alert("Ingrese un número válido");
-    }
-    Continuar = confirm("¿Desea realizar otro cálculo?");
-}
-
-
-let buscarRegistro = function (tipo) {
-    return registros.filter(function (registro) {
-        return registro.tipoDolar.toLowerCase() === tipo.toLowerCase();
+        localStorage.setItem("historial", JSON.stringify(historial));
     });
-};
-
-
-let tipoBusqueda = prompt("Ingrese el tipo de Dólar a buscar (Oficial, Blue, Turista):")
-let resultadosFiltrados = buscarRegistro(tipoBusqueda)
-
-let resultados = "";
-if (resultadosFiltrados.length > 0) {
-    for (let i = 0; i < resultadosFiltrados.length; i++) {
-        resultados += "Registro " + (i + 1) + ":\n"
-        resultados += "Tipo de Dólar: " + resultadosFiltrados[i].tipoDolar + "\n"
-        resultados += "Total en Dólar: " + resultadosFiltrados[i].totalDolar + "\n\n"
-    }
-} else {
-    resultados = "No se encontraron registros para el tipo de Dólar especificado."
 }
-alert(resultados)
+
+
+if (localStorage.getItem("historial")) {
+    let historialGuardado = JSON.parse(localStorage.getItem("historial"));
+    let historialElement = document.getElementById("historial");
+    historialGuardado.forEach((item) => {
+        let resultado = item.resultado;
+        let tipoDolar = item.tipoDolar;
+        let li = document.createElement("li");
+        li.textContent = "El total de Pesos a Dolar " + tipoDolar + " fue de " + resultado;
+        historialElement.appendChild(li);
+    });
+}
+
+borrarhistorial.addEventListener("click", function () {
+    localStorage.removeItem("historial");
+    let historialElement = document.getElementById("historial");
+    historialElement.innerHTML = "";
+});
