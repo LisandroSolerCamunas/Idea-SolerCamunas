@@ -1,54 +1,66 @@
-let CantidadPesos = document.getElementById("cantidad");
-let Opciones = document.getElementsByClassName("btn btn-primary");
-let resultadoElement = document.getElementById("resultado");
-let borrarhistorial = document.getElementById("borrarhistorial")
-let historial = [];
+fetch('tiposDolar.json')
+    .then(response => response.json())
+    .then(data => {
+        const tiposDolar = data;
 
-for (let i = 0; i < Opciones.length; i++) {
-    Opciones[i].addEventListener("click", function () {
-        let opcionSeleccionada = Opciones[i].id;
-        let TotalDolar, tipoDolar;
-        if (opcionSeleccionada === "Dolar oficial") {
-            TotalDolar = (parseInt(CantidadPesos.value) / 239.5).toFixed(2);
-            tipoDolar = "Oficial";
-            localStorage.setItem("resultado", TotalDolar);
-            localStorage.setItem("tipoDolar", tipoDolar);
-            historial.push({ resultado: TotalDolar, tipoDolar });
-            resultadoElement.innerHTML = "El total de Pesos a Dolar " + tipoDolar + " sería de " + TotalDolar;
-        } else if (opcionSeleccionada === "Dolar Blue") {
-            TotalDolar = (parseInt(CantidadPesos.value) / 482).toFixed(2);
-            tipoDolar = "Blue";
-            localStorage.setItem("resultado", TotalDolar);
-            localStorage.setItem("tipoDolar", tipoDolar);
-            historial.push({ resultado: TotalDolar, tipoDolar });
-            resultadoElement.innerHTML = "El total de Pesos a Dolar " + tipoDolar + " sería de " + TotalDolar;
-        } else if (opcionSeleccionada === "Dolar turista") {
-            TotalDolar = (parseInt(CantidadPesos.value) / 503).toFixed(2);
-            tipoDolar = "Turista";
-            localStorage.setItem("resultado", TotalDolar);
-            localStorage.setItem("tipoDolar", tipoDolar);
-            historial.push({ resultado: TotalDolar, tipoDolar });
-            resultadoElement.innerHTML = "El total de Pesos a Dolar " + tipoDolar + " sería de " + TotalDolar;
+        let CantidadPesos = document.getElementById("cantidad");
+        let Opciones = document.getElementsByClassName("btn btn-primary");
+        let resultadoElement = document.getElementById("resultado");
+        let borrarhistorial = document.getElementById("borrarhistorial");
+        let historialElement = document.getElementById("historial");
+        let historial = [];
+
+        for (let i = 0; i < Opciones.length; i++) {
+            Opciones[i].addEventListener("click", function () {
+                let opcionSeleccionada = this.id; // Cambio aquí
+                let TotalDolar, tipoDolar;
+                if (opcionSeleccionada === "DolarOficial") {
+                    TotalDolar = (parseInt(CantidadPesos.value) / 239.5).toFixed(2);
+                    tipoDolar = tiposDolar.Oficial;
+                    resultadoElement.innerHTML = "El total de Pesos a Dólar " + tipoDolar + " sería de " + TotalDolar;
+                    historial.push({ resultado: TotalDolar, tipoDolar });
+                    guardarHistorialEnLocalStorage();
+                } else if (opcionSeleccionada === "DolarBlue") {
+                    TotalDolar = (parseInt(CantidadPesos.value) / 482).toFixed(2);
+                    tipoDolar = tiposDolar.Blue;
+                    resultadoElement.innerHTML = "El total de Pesos a Dólar " + tipoDolar + " sería de " + TotalDolar;
+                    historial.push({ resultado: TotalDolar, tipoDolar });
+                    guardarHistorialEnLocalStorage();
+                } else if (opcionSeleccionada === "DolarTurista") {
+                    TotalDolar = (parseInt(CantidadPesos.value) / 503).toFixed(2);
+                    tipoDolar = tiposDolar.Turista;
+                    resultadoElement.innerHTML = "El total de Pesos a Dólar " + tipoDolar + " sería de " + TotalDolar;
+                    historial.push({ resultado: TotalDolar, tipoDolar });
+                    guardarHistorialEnLocalStorage();
+                }
+            });
         }
-        localStorage.setItem("historial", JSON.stringify(historial));
-    });
-}
 
+        function guardarHistorialEnLocalStorage() {
+            localStorage.setItem("historial", JSON.stringify(historial));
+            mostrarHistorial();
+        }
 
-if (localStorage.getItem("historial")) {
-    let historialGuardado = JSON.parse(localStorage.getItem("historial"));
-    let historialElement = document.getElementById("historial");
-    historialGuardado.forEach((item) => {
-        let resultado = item.resultado;
-        let tipoDolar = item.tipoDolar;
-        let li = document.createElement("li");
-        li.textContent = "El total de Pesos a Dolar " + tipoDolar + " fue de " + resultado;
-        historialElement.appendChild(li);
-    });
-}
+        function mostrarHistorial() {
+            historialElement.innerHTML = "";
+            if (localStorage.getItem("historial")) {
+                let historialGuardado = JSON.parse(localStorage.getItem("historial"));
+                historialGuardado.forEach((item) => {
+                    let resultado = item.resultado;
+                    let tipoDolar = item.tipoDolar;
+                    let li = document.createElement("li");
+                    li.textContent = "El total de Pesos a Dólar " + tipoDolar + " fue de " + resultado;
+                    historialElement.appendChild(li);
+                });
+            }
+        }
 
-borrarhistorial.addEventListener("click", function () {
-    localStorage.removeItem("historial");
-    let historialElement = document.getElementById("historial");
-    historialElement.innerHTML = "";
-});
+        mostrarHistorial();
+
+        borrarhistorial.addEventListener("click", function () {
+            localStorage.removeItem("historial");
+            historial = [];
+            mostrarHistorial();
+        });
+    })
+    .catch(error => console.error('Error al cargar tiposDolar.json:', error));
